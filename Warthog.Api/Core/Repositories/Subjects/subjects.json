@@ -1,0 +1,27 @@
+[
+  {
+    "id": "47894305-c3f8-41ec-b6cc-e8e621da4c80",
+    "name": "Potions",
+    "description": "Turn to page 394"
+  },
+  {
+    "id": "29a8e1b0-6318-4364-bcfa-f70e9cbc7bcb",
+    "name": "Herbology",
+    "description": "Learn how to take care of strange plants and fungi, and find out what they are used for."
+  },
+  {
+    "id": "8425c226-da87-42fe-874b-70b854e879a7",
+    "name": "Charms",
+    "description": "Swish and flick"
+  },
+  {
+    "id": "7b79b758-748f-485d-a61f-799f892cdb8f",
+    "name": "Defense Against the Dark Arts",
+    "description": "The Dark Arts are many, varied, ever-changing and eternal."
+  },
+  {
+    "id": "61a6182b-5765-45fe-be35-4e4b65e16d70",
+    "name": "Divination",
+    "description": "Penetrate the veiled mysteries of the future."
+  }
+]
