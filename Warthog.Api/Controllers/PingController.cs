@@ -2,10 +2,12 @@
 
 namespace Warthog.Api.Controllers
 {
-    public class PingController : Controller
+    public class PingController : ControllerBase
     {
-        [HttpGet("ping")]
-        public string Get()
+        [ProducesResponseType(200)]
+        [HttpGet]
+        [Route("ping")]
+        public string Ping()
         {
             return "OK";
         }

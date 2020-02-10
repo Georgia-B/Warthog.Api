@@ -7,12 +7,12 @@ using Serilog;
 namespace Warthog.Api.Controllers
 {
     [ApiController]
-    public class StudentsController : ControllerBase
+    public class StudentController : ControllerBase
     {
         private readonly ILogger _logger;
         private readonly IStudentService _studentService;
 
-        public StudentsController(ILogger logger, IStudentService studentService)
+        public StudentController(ILogger logger, IStudentService studentService)
         {
             _logger = logger;
             _studentService = studentService;
@@ -37,12 +37,12 @@ namespace Warthog.Api.Controllers
                     return NotFound();
                 }
 
-                _logger.Information($"StudentsController - Successfully fetched {count} students");
+                _logger.Information($"StudentController - Successfully fetched {count} students");
                 return Ok(students);
             }
             catch
             {
-                _logger.Error($"StudentsController - Failed to fetch {count} students");
+                _logger.Error($"StudentController - Failed to fetch {count} students");
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
         }
@@ -63,16 +63,16 @@ namespace Warthog.Api.Controllers
 
                 if (student == null)
                 {
-                    _logger.Error($"StudentsController - Failed to fetch student {id}");
+                    _logger.Error($"StudentController - Failed to fetch student {id}");
                     return NotFound();
                 }
 
-                _logger.Information($"StudentsController - Successfully fetched student {id}");
+                _logger.Information($"StudentController - Successfully fetched student {id}");
                 return Ok(student);
             }
             catch
             {
-                _logger.Error($"StudentsController - Failed to fetch student {id}");
+                _logger.Error($"StudentController - Failed to fetch student {id}");
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
         }

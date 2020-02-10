@@ -4,24 +4,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Warthog.Api.Core.Services.Subjects;
 using Warthog.Api.Models;
+using Serilog;
 
 namespace Warthog.Api.Controllers
 {
     [Produces("application/json")]
     [ApiController]
-    public class SubjectsController : ControllerBase
+    public class SubjectController : ControllerBase
     {
         private readonly ISubjectService _subjectService;
+        private readonly ILogger _logger;
 
-        public SubjectsController(ISubjectService subjectService)
+        public SubjectController(ISubjectService subjectService, ILogger logger)
         {
             _subjectService = subjectService;
+            _logger = logger;
         }
 
         /// <summary>
-        /// Returns photos that match the passed.
+        /// Returns a list of all subjects.
         /// </summary>
-        /// <returns>The photos that match the passed params</returns>
+        /// <returns>A subject list</returns>
         [ProducesResponseType(200)]
         [HttpGet]
         [Route("subjects")]
@@ -30,19 +33,20 @@ namespace Warthog.Api.Controllers
             try
             {
                 var subjects = _subjectService.GetSubjects();
-
+                _logger.Information($"SubjectController - Successfully fetched list of subjects");
                 return Ok(subjects);
             }
             catch
             {
+                _logger.Error("SubjectController - Failed to fetch list of subjects");
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
         }
 
         /// <summary>
-        /// Returns a single app summary with the passed `slug`.
+        /// Returns a single subject.
         /// </summary>
-        /// <returns>The app summary that match the passed params</returns>
+        /// <returns>The subject that matches the passed params</returns>
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [HttpGet]
@@ -57,11 +61,12 @@ namespace Warthog.Api.Controllers
                 {
                     return NotFound();
                 }
-
+                _logger.Information($"SubjectController - Successfully fetched subject with id: {id}");
                 return Ok(subject);
             }
             catch
             {
+                _logger.Error($"SubjectController - Failed to fetch subject with id: {id}");
                 return StatusCode(StatusCodes.Status503ServiceUnavailable);
             }
         }
