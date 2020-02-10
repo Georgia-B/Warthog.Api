@@ -5,16 +5,19 @@ using System.Text.Json;
 using System.IO;
 using MongoDB.Driver;
 using Warthog.Api.Models;
+using Serilog;
 
 namespace Warthog.Api.Core.Repositories.Students
 {
     public class StudentRepository : IStudentRepository
     {
+        private readonly ILogger _logger;
         private Data list = new Data();
         private readonly IMongoCollection<Student> _studentCollection;
 
-        public StudentRepository(IWarthogDatabaseSettings settings)
+        public StudentRepository(IWarthogDatabaseSettings settings, ILogger logger)
         {
+            _logger = logger;
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
@@ -34,6 +37,8 @@ namespace Warthog.Api.Core.Repositories.Students
         {
             try
             {
+                _logger.Information($"StudentRepository - Trying to fetch {count} students");
+
                 var students = _studentCollection.Find<Student>(student => true).ToList();
                 if (count < students.Count)
                 {
@@ -44,15 +49,38 @@ namespace Warthog.Api.Core.Repositories.Students
                 students.AddRange(randomStudents);
                 return students;
             }
+            catch (Exception e) when (e is TimeoutException || e is MongoConnectionException)
+            {
+                _logger.Information($"StudentRepository - Couldn't fetch from DB fetching from file instead. Exception {e.Message}");
+                return GetRandomStudents(count);
+            }
             catch (Exception e)
             {
+                _logger.Error($"StudentRepository - Failed to fetch list of students. Exception {e.Message}");
                 throw new Exception("StudentRepository - Failed to fetch list of students", e);
             }
         }
 
         public Student GetStudent(string studentId)
         {
-            return _studentCollection.Find<Student>(student => student.Id == studentId).FirstOrDefault();
+            try
+            {
+                return _studentCollection.Find<Student>(student => student.Id == studentId).FirstOrDefault();
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"StudentRepository - Failed to fetch student {studentId}", e);
+            }
+        }
+
+        private IList<Student> GetRandomStudents(int count)
+        {
+            List<Student> list = new List<Student>();
+            for (var i = 0; i < count; i++)
+            {
+                list.Add(GetRandomStudent());
+            }
+            return list;
         }
 
         private Student GetRandomStudent()
@@ -71,16 +99,6 @@ namespace Warthog.Api.Core.Repositories.Students
                 Gpa = list.Gpas[gpaIndex],
                 House = list.Houses[houseIndex]
             };
-        }
-
-        private IList<Student> GetRandomStudents(int count)
-        {
-            List<Student> list = new List<Student>();
-            for(var i = 0; i < count; i++)
-            {
-                list.Add(GetRandomStudent());
-            }
-            return list;
         }
     }
 }
