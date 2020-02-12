@@ -35,7 +35,7 @@ GET `/students?count=10`
 ]
 ```
 
-### GET `/student/{id}`
+### GET `/students/{id}`
 
 Example:
 
@@ -50,3 +50,11 @@ GET `/student/687801bc-e902-47df-98af-4b55aca0f858`
   "house":"gryffindor"
 }
 ```
+
+## Still to do 
+
+ - Add more tests - xUnit and Cypress
+ - Finish subjects endpoint
+ - Add pagination for larger payloads
+ - Environment variable management
+ - Error handling
